@@ -31,11 +31,11 @@ locals {
   ])
 }
 
-data "aws_cloudwatch_event_bus" "this" {
-  count = (var.create && var.create_bus) || (var.bus_name == "") ? 0 : 1
+# data "aws_cloudwatch_event_bus" "this" {
+#   count = (var.create && var.create_bus) || (var.bus_name == "") ? 0 : 1
 
-  name = var.bus_name
-}
+#   name = var.bus_name
+# }
 
 resource "aws_cloudwatch_event_bus" "this" {
   count = var.create && var.create_bus ? 1 : 0
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_event_bus" "this" {
 resource "aws_schemas_discoverer" "this" {
   count = var.create && var.create_schemas_discoverer ? 1 : 0
 
-  source_arn  = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : data.aws_cloudwatch_event_bus.this[0].arn
+  source_arn  = var.create_bus ? aws_cloudwatch_event_bus.this[0].arn : resource.aws_cloudwatch_event_bus.this[0].arn
   description = var.schemas_discoverer_description
 
   tags = var.tags
